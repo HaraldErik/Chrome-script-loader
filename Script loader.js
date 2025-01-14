@@ -14,20 +14,26 @@
     guiContainer.style.width = '300px';
     guiContainer.style.textAlign = 'center';
     guiContainer.style.zIndex = 10000;
+    guiContainer.style.cursor = 'grab'; // Set cursor to indicate draggable
 
-    // Add a title
-    const title = document.createElement('h3');
-    title.textContent = 'Script Loader';
-    title.style.marginBottom = '20px';
-    title.style.fontFamily = 'Arial, sans-serif';
-    title.style.color = '#333333';
-    guiContainer.appendChild(title);
+    // Create a header for dragging
+    const header = document.createElement('div');
+    header.style.backgroundColor = '#007BFF';
+    header.style.color = '#ffffff';
+    header.style.padding = '10px';
+    header.style.borderTopLeftRadius = '10px';
+    header.style.borderTopRightRadius = '10px';
+    header.style.cursor = 'grab';
+    header.style.userSelect = 'none';
+    header.textContent = 'Script Loader';
+    guiContainer.appendChild(header);
 
     // Add the button
     const loadButton = document.createElement('button');
     loadButton.textContent = 'Load Script';
     loadButton.style.padding = '10px 20px';
     loadButton.style.fontSize = '16px';
+    loadButton.style.marginTop = '20px';
     loadButton.style.backgroundColor = '#007BFF';
     loadButton.style.color = '#ffffff';
     loadButton.style.border = 'none';
@@ -66,6 +72,8 @@
 
     guiContainer.appendChild(loadButton);
 
-    // Add the GUI to the document
-    document.body.appendChild(guiContainer);
-})();
+    // Add dragging functionality
+    let isDragging = false;
+    let offsetX, offsetY;
+
+  
