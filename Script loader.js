@@ -1,106 +1,71 @@
 (function () {
     'use strict';
 
-    const results = [];
+    // Create the GUI container
+    const guiContainer = document.createElement('div');
+    guiContainer.style.position = 'fixed';
+    guiContainer.style.top = '50%';
+    guiContainer.style.left = '50%';
+    guiContainer.style.transform = 'translate(-50%, -50%)';
+    guiContainer.style.backgroundColor = '#ffffff';
+    guiContainer.style.borderRadius = '10px';
+    guiContainer.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.2)';
+    guiContainer.style.padding = '20px';
+    guiContainer.style.width = '300px';
+    guiContainer.style.textAlign = 'center';
+    guiContainer.style.zIndex = 10000;
 
-    // Helper function to test and log results
-    function logResult(testName, testResult) {
-        results.push(`${testName}: ${testResult}`);
-    }
+    // Add a title
+    const title = document.createElement('h3');
+    title.textContent = 'Script Loader';
+    title.style.marginBottom = '20px';
+    title.style.fontFamily = 'Arial, sans-serif';
+    title.style.color = '#333333';
+    guiContainer.appendChild(title);
 
-    // Test 1: Simple math computation performance test
-    const startMath = performance.now();
-    for (let i = 0; i < 1000000; i++) {
-        Math.sqrt(i);
-    }
-    const endMath = performance.now();
-    logResult("Math computation performance (1 million iterations)", `${(endMath - startMath).toFixed(2)} ms`);
-
-    // Test 2: Checking modern JavaScript feature support (Promises)
-    const promiseTest = new Promise((resolve, reject) => {
-        setTimeout(() => resolve("Promises are supported!"), 100);
+    // Add the button
+    const loadButton = document.createElement('button');
+    loadButton.textContent = 'Load Script';
+    loadButton.style.padding = '10px 20px';
+    loadButton.style.fontSize = '16px';
+    loadButton.style.backgroundColor = '#007BFF';
+    loadButton.style.color = '#ffffff';
+    loadButton.style.border = 'none';
+    loadButton.style.borderRadius = '5px';
+    loadButton.style.cursor = 'pointer';
+    loadButton.style.transition = 'background-color 0.3s';
+    loadButton.addEventListener('mouseover', () => {
+        loadButton.style.backgroundColor = '#0056b3';
     });
-    promiseTest.then(result => {
-        logResult("Promises support", result);
-    }).catch(error => {
-        logResult("Promises support", "Failed");
+    loadButton.addEventListener('mouseout', () => {
+        loadButton.style.backgroundColor = '#007BFF';
     });
 
-    // Test 3: Checking async/await support
-    async function asyncTest() {
-        return "Async/Await is supported!";
-    }
-    asyncTest().then(result => {
-        logResult("Async/Await support", result);
-    }).catch(error => {
-        logResult("Async/Await support", "Failed");
+    // Add button click event
+    loadButton.addEventListener('click', function () {
+        const scriptURL = 'https://raw.githubusercontent.com/HaraldErik/Chrome-script-loader/refs/heads/main/test%20functions.js';
+
+        // Fetch and execute the script
+        fetch(scriptURL)
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                }
+                throw new Error(`Failed to load script: ${response.statusText}`);
+            })
+            .then(scriptContent => {
+                eval(scriptContent); // Execute the loaded script
+                alert('Script loaded and executed successfully!');
+                document.body.removeChild(guiContainer); // Remove the GUI
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Failed to load the script.');
+            });
     });
 
-    // Test 4: Checking if localStorage is available and functional
-    try {
-        localStorage.setItem("testKey", "testValue");
-        const localStorageValue = localStorage.getItem("testKey");
-        logResult("localStorage support", localStorageValue === "testValue" ? "Supported and functional" : "Supported but not functional");
-    } catch (error) {
-        logResult("localStorage support", "Not supported or error occurred");
-    }
+    guiContainer.appendChild(loadButton);
 
-    // Test 5: Fetch API availability
-    fetch('https://jsonplaceholder.typicode.com/todos/1')
-        .then(response => response.json())
-        .then(data => {
-            logResult("Fetch API support", "Supported and functional");
-        })
-        .catch(error => {
-            logResult("Fetch API support", "Not supported or error occurred");
-        });
-
-    // Test 6: DOM manipulation test
-    const testDiv = document.createElement('div');
-    testDiv.innerHTML = "JavaScript is able to manipulate the DOM!";
-    document.body.appendChild(testDiv);
-    logResult("DOM manipulation", "Supported and functional");
-
-    // Test 7: Error handling in JavaScript
-    try {
-        throw new Error("This is a test error!");
-    } catch (error) {
-        logResult("Error handling", error.message);
-    }
-
-    // Test 8: Web Worker Support
-    if (typeof Worker !== "undefined") {
-        const workerBlob = new Blob([`
-            self.onmessage = function() {
-                self.postMessage("Web Worker is supported and functional!");
-            };
-        `], { type: "application/javascript" });
-
-        const worker = new Worker(URL.createObjectURL(workerBlob));
-        worker.onmessage = function (e) {
-            logResult("Web Worker support", e.data);
-            worker.terminate();
-        };
-        worker.postMessage("start");
-    } else {
-        logResult("Web Worker support", "Not supported in this browser");
-    }
-
-    // Test 9: Service Worker Support
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js').then(function (registration) {
-            logResult("Service Worker support", "Supported and functional");
-        }).catch(function (error) {
-            logResult("Service Worker support", "Failed to register Service Worker: " + error);
-        });
-    } else {
-        logResult("Service Worker support", "Not supported in this browser");
-    }
-
-    // Display the results as an alert
-    setTimeout(() => {
-        alert("JavaScript Test Results:\n" + results.join("\n"));
-    }, 500);
+    // Add the GUI to the document
+    document.body.appendChild(guiContainer);
 })();
-
-
