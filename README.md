@@ -99,4 +99,13 @@ Web Worker support. Web Worker is supported and functional!
 Fetch API support: Supported and functional 
 
 
-Match computation preformance is different from website and computer i got above 200 ms most of the time. I was very lucky with getting 288.20 ms in the first test
+Match computation preformance is different from website and computer i got above 200 ms most of the time. The first time i did the test i got 288.20 ms
+
+# how to load/execute the script
+It can be loaded by using a userscript. There are currently 2 versions
+
+the first one is the one you shoud use and try first. it works on most websites.
+
+the second is a V2 made for websites that are not working but its more complicated
+
+There arent any releases yet of the userscript
