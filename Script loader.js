@@ -30,7 +30,7 @@
 
     // Add the button
     const loadButton = document.createElement('button');
-    loadButton.textContent = 'Load Script';
+    loadButton.textContent = 'Load Test functions.js';
     loadButton.style.margin = '20px 0';
     loadButton.style.padding = '10px 20px';
     loadButton.style.fontSize = '16px';
