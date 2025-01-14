@@ -10,11 +10,11 @@
     guiContainer.style.backgroundColor = '#ffffff';
     guiContainer.style.borderRadius = '10px';
     guiContainer.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.2)';
-    guiContainer.style.padding = '20px';
+    guiContainer.style.padding = '0'; // Padding is handled by children
     guiContainer.style.width = '300px';
     guiContainer.style.textAlign = 'center';
     guiContainer.style.zIndex = 10000;
-    guiContainer.style.cursor = 'grab'; // Set cursor to indicate draggable
+    guiContainer.style.cursor = 'default';
 
     // Create a header for dragging
     const header = document.createElement('div');
@@ -31,9 +31,9 @@
     // Add the button
     const loadButton = document.createElement('button');
     loadButton.textContent = 'Load Script';
+    loadButton.style.margin = '20px 0';
     loadButton.style.padding = '10px 20px';
     loadButton.style.fontSize = '16px';
-    loadButton.style.marginTop = '20px';
     loadButton.style.backgroundColor = '#007BFF';
     loadButton.style.color = '#ffffff';
     loadButton.style.border = 'none';
@@ -76,4 +76,30 @@
     let isDragging = false;
     let offsetX, offsetY;
 
-  
+    header.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        offsetX = e.clientX - guiContainer.getBoundingClientRect().left;
+        offsetY = e.clientY - guiContainer.getBoundingClientRect().top;
+        header.style.cursor = 'grabbing';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            const left = e.clientX - offsetX;
+            const top = e.clientY - offsetY;
+            guiContainer.style.left = `${left}px`;
+            guiContainer.style.top = `${top}px`;
+            guiContainer.style.transform = 'none'; // Disable centering when moved
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            header.style.cursor = 'grab';
+        }
+    });
+
+    // Add the GUI to the document
+    document.body.appendChild(guiContainer);
+})();
