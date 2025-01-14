@@ -8,6 +8,7 @@ https://3kh0.github.io/ext-remover/
 # Script functions
 I ran a test with the script to se what fuctions where working
 ´´´
+
 (function () {
     'use strict';
 
@@ -83,7 +84,6 @@ I ran a test with the script to se what fuctions where working
         alert("JavaScript Test Results:\n" + results.join("\n"));
     }, 500);
 })();
-JavaScript is able to manipulate the DOM!
 ´´´
 and the result where excellent
 
