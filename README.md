@@ -88,8 +88,15 @@ I ran a test with the script to se what fuctions where working
 and the result where excellent
 
 JavaScript Test Results:
-Math computation performance (1 million iterations): 288.20 ms localStorage support: Supported and functional
-DOM manipulation: Supported and functional Error handling: This is a test error!
+Math computation performance (1 million iterations): 288.20 ms
+localStorage support: Supported and functional
+DOM manipulation: Supported and functional 
+Error handling: This is a test error!
 Async/Await support: Async/Await is supported! Promises support: Promises are supported!
+
+Update:
+Web Worker support. Web Worker is supported and functional!
+Fetch API support: Supported and functional 
+
 
 Match computation preformance is different from website and computer i got above 200 ms most of the time. I was very lucky with getting 288.20 ms in the first test
