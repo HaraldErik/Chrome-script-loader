@@ -68,6 +68,35 @@
         logResult("Error handling", error.message);
     }
 
+    // Test 8: Web Worker Support
+    if (typeof Worker !== "undefined") {
+        const workerBlob = new Blob([`
+            self.onmessage = function() {
+                self.postMessage("Web Worker is supported and functional!");
+            };
+        `], { type: "application/javascript" });
+
+        const worker = new Worker(URL.createObjectURL(workerBlob));
+        worker.onmessage = function (e) {
+            logResult("Web Worker support", e.data);
+            worker.terminate();
+        };
+        worker.postMessage("start");
+    } else {
+        logResult("Web Worker support", "Not supported in this browser");
+    }
+
+    // Test 9: Service Worker Support
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js').then(function (registration) {
+            logResult("Service Worker support", "Supported and functional");
+        }).catch(function (error) {
+            logResult("Service Worker support", "Failed to register Service Worker: " + error);
+        });
+    } else {
+        logResult("Service Worker support", "Not supported in this browser");
+    }
+
     // Display the results as an alert
     setTimeout(() => {
         alert("JavaScript Test Results:\n" + results.join("\n"));
