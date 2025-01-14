@@ -1,0 +1,1 @@
+alert("The script from the .txt file was successfully loaded!");
