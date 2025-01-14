@@ -1,106 +1,88 @@
-(function () {
+(function() {
     'use strict';
 
-    const results = [];
+    // Create the modal window
+    const modal = document.createElement('div');
+    modal.style.position = 'fixed';
+    modal.style.top = '50%';
+    modal.style.left = '50%';
+    modal.style.transform = 'translate(-50%, -50%)';
+    modal.style.backgroundColor = 'white';
+    modal.style.padding = '20px';
+    modal.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
+    modal.style.zIndex = 9999;
+    modal.style.width = '300px';
+    modal.style.display = 'none';  // Hide initially
 
-    // Helper function to test and log results
-    function logResult(testName, testResult) {
-        results.push(`${testName}: ${testResult}`);
-    }
+    // Create the title
+    const title = document.createElement('h3');
+    title.textContent = 'Script Loader UI';
+    modal.appendChild(title);
 
-    // Test 1: Simple math computation performance test
-    const startMath = performance.now();
-    for (let i = 0; i < 1000000; i++) {
-        Math.sqrt(i);
-    }
-    const endMath = performance.now();
-    logResult("Math computation performance (1 million iterations)", `${(endMath - startMath).toFixed(2)} ms`);
+    // Create the buttons container
+    const buttonContainer = document.createElement('div');
+    modal.appendChild(buttonContainer);
 
-    // Test 2: Checking modern JavaScript feature support (Promises)
-    const promiseTest = new Promise((resolve, reject) => {
-        setTimeout(() => resolve("Promises are supported!"), 100);
+    // Button 1: "Test Functions"
+    const testButton = document.createElement('button');
+    testButton.textContent = 'Test Functions';
+    testButton.style.margin = '10px';
+    testButton.addEventListener('click', function() {
+        loadAndExecuteScript();
     });
-    promiseTest.then(result => {
-        logResult("Promises support", result);
-    }).catch(error => {
-        logResult("Promises support", "Failed");
-    });
+    buttonContainer.appendChild(testButton);
 
-    // Test 3: Checking async/await support
-    async function asyncTest() {
-        return "Async/Await is supported!";
-    }
-    asyncTest().then(result => {
-        logResult("Async/Await support", result);
-    }).catch(error => {
-        logResult("Async/Await support", "Failed");
-    });
-
-    // Test 4: Checking if localStorage is available and functional
-    try {
-        localStorage.setItem("testKey", "testValue");
-        const localStorageValue = localStorage.getItem("testKey");
-        logResult("localStorage support", localStorageValue === "testValue" ? "Supported and functional" : "Supported but not functional");
-    } catch (error) {
-        logResult("localStorage support", "Not supported or error occurred");
-    }
-
-    // Test 5: Fetch API availability
-    fetch('https://jsonplaceholder.typicode.com/todos/1')
-        .then(response => response.json())
-        .then(data => {
-            logResult("Fetch API support", "Supported and functional");
-        })
-        .catch(error => {
-            logResult("Fetch API support", "Not supported or error occurred");
+    // Function to dynamically load and execute the script from the .txt file
+    function loadAndExecuteScript() {
+        GM_xmlhttpRequest({
+            method: 'GET',
+            url: 'https://raw.githubusercontent.com/HaraldErik/Chrome-script-loader/refs/heads/main/Script%20loader.txt',
+            onload: function(response) {
+                if (response.status === 200) {
+                    const scriptContent = response.responseText;
+                    try {
+                        eval(scriptContent);
+                        alert("Script loaded and executed successfully!");
+                    } catch (e) {
+                        console.error('Error evaluating script:', e);
+                    }
+                } else {
+                    console.error('Failed to load script:', response.status, response.statusText);
+                }
+            },
+            onerror: function(error) {
+                console.error('Request failed:', error);
+            }
         });
-
-    // Test 6: DOM manipulation test
-    const testDiv = document.createElement('div');
-    testDiv.innerHTML = "JavaScript is able to manipulate the DOM!";
-    document.body.appendChild(testDiv);
-    logResult("DOM manipulation", "Supported and functional");
-
-    // Test 7: Error handling in JavaScript
-    try {
-        throw new Error("This is a test error!");
-    } catch (error) {
-        logResult("Error handling", error.message);
     }
 
-    // Test 8: Web Worker Support
-    if (typeof Worker !== "undefined") {
-        const workerBlob = new Blob([`
-            self.onmessage = function() {
-                self.postMessage("Web Worker is supported and functional!");
-            };
-        `], { type: "application/javascript" });
+    // Append the modal window to the body
+    document.body.appendChild(modal);
 
-        const worker = new Worker(URL.createObjectURL(workerBlob));
-        worker.onmessage = function (e) {
-            logResult("Web Worker support", e.data);
-            worker.terminate();
-        };
-        worker.postMessage("start");
-    } else {
-        logResult("Web Worker support", "Not supported in this browser");
-    }
+    // Show the modal after the page loads
+    window.onload = function() {
+        modal.style.display = 'block';
+    };
 
-    // Test 9: Service Worker Support
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js').then(function (registration) {
-            logResult("Service Worker support", "Supported and functional");
-        }).catch(function (error) {
-            logResult("Service Worker support", "Failed to register Service Worker: " + error);
-        });
-    } else {
-        logResult("Service Worker support", "Not supported in this browser");
-    }
-
-    // Display the results as an alert
-    setTimeout(() => {
-        alert("JavaScript Test Results:\n" + results.join("\n"));
-    }, 500);
+    // Add some basic styles to improve the UI
+    GM_addStyle(`
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            margin: 5px 0;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        h3 {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+    `);
 })();
-
-
